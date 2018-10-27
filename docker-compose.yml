@@ -1,0 +1,15 @@
+version: '3'
+services:
+  wrk2:
+    image: 1vlad/wrk2-docker
+    entrypoint: /bin/sh
+    command: -c '/wrk2/wrk -t2 -c100 -d30s -R100 --timeout 30s -L -s /script/myscript.lua http://localhost/ &> /data/result.out'
+    volumes:
+      - ./stress_test/lua:/lua
+      - ./stress_test/data:/data
+  hdr_plotter: 
+    build: ./hdr-plotter/
+    command: /bin/bash -c "./hdr-plot --output /out/result.png --title 'result' /data/*"
+    volumes:
+      - ./stress_test/data:/data
+      - ./stress_test/out:/out
